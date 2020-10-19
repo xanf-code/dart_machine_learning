@@ -1,11 +1,21 @@
 import 'dart:io';
 
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:ml/ssd/ssd.dart';
 import 'package:tflite/tflite.dart';
 
-void main() {
-  runApp(MyApp());
+List<CameraDescription> cameras;
+
+Future<Null> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  try {
+    cameras = await availableCameras();
+  } on CameraException catch (e) {
+    print("Error $e.code /nMessage $e.message");
+  }
+  runApp(new MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -14,7 +24,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      home: MyHomePage(),
+      home: SSD(cameras),
     );
   }
 }
